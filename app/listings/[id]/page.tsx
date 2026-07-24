@@ -82,7 +82,7 @@ export default async function ListingDetailPage({ params }: PageProps) {
               <AlertCircle size={17} className="shrink-0 mt-0.5" style={{ color: "#92650A" }} />
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: "#92650A" }}>
-                  Internal Note — Admin Only
+                  Internal Note - Admin Only
                 </p>
                 <p className="text-sm" style={{ color: "#78530A" }}>{property.internal_status}</p>
               </div>

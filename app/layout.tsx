@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Estatly — Property Listings",
+  title: "Estatly - Property Listings",
   description: "Find your next property with Estatly",
 };
 
