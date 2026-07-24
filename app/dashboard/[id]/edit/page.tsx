@@ -36,6 +36,8 @@ function EditListingContent({ id }: { id: string }) {
     if (error) return <p className="text-sm text-red-600">{error}</p>;
     if (!listing) return <p className="text-sm text-red-600">Listing not found.</p>;
 
+    const isAdmin = auth?.profile.type === "agent" && auth.profile.is_admin;
+
     return (
         <div className="max-w-2xl mx-auto">
             <h1 className="font-[family-name:var(--font-playfair)] text-3xl text-[var(--text-primary)] mb-6">
@@ -45,6 +47,9 @@ function EditListingContent({ id }: { id: string }) {
                 initialValues={{ ...listing, land_size: listing.land_size ?? undefined }}
                 onSubmit={handleSubmit}
                 submitLabel="Save Changes"
+                isAdmin={isAdmin}
+                listingId={listing.id}
+                initialImages={listing.images}
             />
         </div>
     );
