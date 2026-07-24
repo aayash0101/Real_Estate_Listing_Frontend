@@ -11,8 +11,12 @@ const TYPE_ACCENT: Record<string, string> = {
   COMMERCIAL: "#64748B",
 };
 
+const API_ORIGIN =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") || "http://localhost:5000";
+
 export default function PropertyCard({ property }: { property: Property }) {
   const accent = TYPE_ACCENT[property.property_type] ?? "#64748B";
+  const coverImage = property.images?.[0]?.url;
 
   return (
     <Link href={`/listings/${property.id}`}>
@@ -22,6 +26,24 @@ export default function PropertyCard({ property }: { property: Property }) {
       >
         {/* Left amber accent bar */}
         <div className="w-1 shrink-0 transition-all" style={{ backgroundColor: "var(--amber)" }} />
+
+        {/* Cover image thumbnail */}
+        <div className="w-32 shrink-0 self-stretch">
+          {coverImage ? (
+            <img
+              src={`${API_ORIGIN}${coverImage}`}
+              alt={property.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div
+              className="w-full h-full flex items-center justify-center text-[10px] font-medium text-center px-2"
+              style={{ backgroundColor: "var(--border)", color: "var(--text-secondary)" }}
+            >
+              No photo
+            </div>
+          )}
+        </div>
 
         <div className="flex-1 p-5">
           {/* Top row: type badge + price */}
