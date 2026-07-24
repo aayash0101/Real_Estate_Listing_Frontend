@@ -1,10 +1,17 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { useState } from "react";
+import { Search, X, SlidersHorizontal } from "lucide-react";
 
 const PROPERTY_TYPES = ["HOUSE", "APARTMENT", "TOWNHOUSE", "LAND", "COMMERCIAL"];
+const TYPE_LABELS: Record<string, string> = {
+  HOUSE: "House",
+  APARTMENT: "Apartment",
+  TOWNHOUSE: "Townhouse",
+  LAND: "Land",
+  COMMERCIAL: "Commercial",
+};
 
 export default function SearchFilters() {
   const router = useRouter();
@@ -36,133 +43,113 @@ export default function SearchFilters() {
   }
 
   function handleClear() {
-    setKeyword("");
-    setSuburb("");
-    setPriceMin("");
-    setPriceMax("");
-    setBedrooms("");
-    setBathrooms("");
-    setPropertyType("");
+    setKeyword(""); setSuburb(""); setPriceMin("");
+    setPriceMax(""); setBedrooms(""); setBathrooms(""); setPropertyType("");
     router.push("/");
   }
 
-  const hasFilters =
-    keyword || suburb || priceMin || priceMax || bedrooms || bathrooms || propertyType;
+  const hasFilters = keyword || suburb || priceMin || priceMax || bedrooms || bathrooms || propertyType;
+  const inputClass = "w-full px-3 py-2.5 text-sm rounded-lg border focus:outline-none focus:ring-2 transition-all bg-white";
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 text-gray-700 font-semibold">
-          <SlidersHorizontal size={16} />
-          <span>Filters</span>
+    <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border)", backgroundColor: "var(--card)" }}>
+      <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border)" }}>
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal size={15} style={{ color: "var(--amber)" }} />
+          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Filters</span>
         </div>
         {hasFilters && (
-          <button
-            onClick={handleClear}
-            className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-500 transition-colors"
-          >
-            <X size={13} />
-            Clear all
+          <button onClick={handleClear} className="flex items-center gap-1 text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+            <X size={12} /> Clear
           </button>
         )}
       </div>
 
-      <div className="space-y-4">
+      <div className="p-5 space-y-5">
         {/* Keyword */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-secondary)" }}>
             Keyword
           </label>
           <div className="relative">
-            <Search
-              size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+            <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-secondary)" }} />
             <input
-              type="text"
-              value={keyword}
+              type="text" value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="e.g. pool, renovated..."
-              className="w-full pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Pool, renovated, views..."
+              className={inputClass}
+              style={{ borderColor: "var(--border)", color: "var(--text-primary)", paddingLeft: "2rem" }}
             />
           </div>
         </div>
 
         {/* Suburb */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-secondary)" }}>
             Suburb
           </label>
           <input
-            type="text"
-            value={suburb}
+            type="text" value={suburb}
             onChange={(e) => setSuburb(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder="e.g. Northside"
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
+            style={{ borderColor: "var(--border)", color: "var(--text-primary)" }}
           />
         </div>
 
         {/* Property Type */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-secondary)" }}>
             Property Type
           </label>
-          <select
-            value={propertyType}
-            onChange={(e) => setPropertyType(e.target.value)}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-          >
-            <option value="">All types</option>
+          <div className="grid grid-cols-2 gap-1.5">
             {PROPERTY_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t.charAt(0) + t.slice(1).toLowerCase()}
-              </option>
+              <button
+                key={t}
+                onClick={() => setPropertyType(propertyType === t ? "" : t)}
+                className="py-2 px-3 text-xs font-medium rounded-lg border transition-all text-left"
+                style={propertyType === t
+                  ? { backgroundColor: "var(--navy)", color: "#fff", borderColor: "var(--navy)" }
+                  : { backgroundColor: "var(--bg)", color: "var(--text-secondary)", borderColor: "var(--border)" }
+                }
+              >
+                {TYPE_LABELS[t]}
+              </button>
             ))}
-          </select>
+          </div>
         </div>
 
         {/* Price Range */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">
-            Price Range (AUD)
+          <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-secondary)" }}>
+            Price (AUD)
           </label>
           <div className="flex gap-2">
-            <input
-              type="number"
-              value={priceMin}
-              onChange={(e) => setPriceMin(e.target.value)}
-              placeholder="Min"
-              className="w-1/2 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="number"
-              value={priceMax}
-              onChange={(e) => setPriceMax(e.target.value)}
-              placeholder="Max"
-              className="w-1/2 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <input type="number" value={priceMin} onChange={(e) => setPriceMin(e.target.value)}
+              placeholder="Min" className={inputClass}
+              style={{ borderColor: "var(--border)", color: "var(--text-primary)" }} />
+            <input type="number" value={priceMax} onChange={(e) => setPriceMax(e.target.value)}
+              placeholder="Max" className={inputClass}
+              style={{ borderColor: "var(--border)", color: "var(--text-primary)" }} />
           </div>
         </div>
 
         {/* Bedrooms */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-secondary)" }}>
             Min Bedrooms
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             {["", "1", "2", "3", "4", "5"].map((n) => (
-              <button
-                key={n}
-                onClick={() => setBedrooms(n)}
-                className={`flex-1 py-1.5 text-sm rounded-lg border transition-colors ${
-                  bedrooms === n
-                    ? "bg-blue-500 text-white border-blue-500"
-                    : "border-gray-200 text-gray-600 hover:border-blue-300"
-                }`}
-              >
-                {n === "" ? "Any" : n + "+"}
+              <button key={n} onClick={() => setBedrooms(n)}
+                className="flex-1 py-2 text-xs font-semibold rounded-lg border transition-all"
+                style={bedrooms === n
+                  ? { backgroundColor: "var(--amber)", color: "var(--navy)", borderColor: "var(--amber)" }
+                  : { backgroundColor: "var(--bg)", color: "var(--text-secondary)", borderColor: "var(--border)" }
+                }>
+                {n === "" ? "Any" : `${n}+`}
               </button>
             ))}
           </div>
@@ -170,30 +157,27 @@ export default function SearchFilters() {
 
         {/* Bathrooms */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-secondary)" }}>
             Min Bathrooms
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             {["", "1", "2", "3"].map((n) => (
-              <button
-                key={n}
-                onClick={() => setBathrooms(n)}
-                className={`flex-1 py-1.5 text-sm rounded-lg border transition-colors ${
-                  bathrooms === n
-                    ? "bg-blue-500 text-white border-blue-500"
-                    : "border-gray-200 text-gray-600 hover:border-blue-300"
-                }`}
-              >
-                {n === "" ? "Any" : n + "+"}
+              <button key={n} onClick={() => setBathrooms(n)}
+                className="flex-1 py-2 text-xs font-semibold rounded-lg border transition-all"
+                style={bathrooms === n
+                  ? { backgroundColor: "var(--amber)", color: "var(--navy)", borderColor: "var(--amber)" }
+                  : { backgroundColor: "var(--bg)", color: "var(--text-secondary)", borderColor: "var(--border)" }
+                }>
+                {n === "" ? "Any" : `${n}+`}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Search button */}
         <button
           onClick={handleSearch}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm"
+          className="w-full py-3 rounded-xl text-sm font-bold tracking-wide transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "var(--navy)", color: "#fff" }}
         >
           Search Properties
         </button>
