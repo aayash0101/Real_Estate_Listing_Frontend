@@ -2,17 +2,33 @@
 
 import { useState, FormEvent } from "react";
 import { ListingInput, Property } from "@/lib/api";
+import ImageUploader from "@/components/ImageUploader";
 
 const PROPERTY_TYPES = ["HOUSE", "APARTMENT", "TOWNHOUSE", "LAND", "COMMERCIAL"] as const;
+
+interface PropertyImage {
+  id: string;
+  url: string;
+  order: number;
+}
 
 interface ListingFormProps {
   initialValues?: Partial<ListingInput>;
   onSubmit: (input: ListingInput) => Promise<void>;
   submitLabel: string;
   isAdmin?: boolean;
+  listingId?: string; // present only in edit mode — images require an existing listing
+  initialImages?: PropertyImage[];
 }
 
-export default function ListingForm({ initialValues, onSubmit, submitLabel, isAdmin }: ListingFormProps) {
+export default function ListingForm({
+  initialValues,
+  onSubmit,
+  submitLabel,
+  isAdmin,
+  listingId,
+  initialImages,
+}: ListingFormProps) {
   const [form, setForm] = useState<ListingInput>({
     title: initialValues?.title ?? "",
     description: initialValues?.description ?? "",
@@ -28,6 +44,7 @@ export default function ListingForm({ initialValues, onSubmit, submitLabel, isAd
     land_size: initialValues?.land_size,
     internal_status: initialValues?.internal_status ?? "",
   });
+  const [images, setImages] = useState<PropertyImage[]>(initialImages ?? []);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -202,6 +219,18 @@ export default function ListingForm({ initialValues, onSubmit, submitLabel, isAd
             className={inputClass}
           />
         </div>
+      )}
+
+      {listingId ? (
+        <ImageUploader
+          listingId={listingId}
+          existingImages={images}
+          onChange={setImages}
+        />
+      ) : (
+        <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+          Save this listing first to add photos.
+        </p>
       )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
