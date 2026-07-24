@@ -276,7 +276,7 @@ export async function uploadListingImages(
   listingId: string,
   files: File[],
   token: string
-) {
+): Promise<PropertyImage[]> {
   const formData = new FormData();
   files.forEach((file) => formData.append("images", file));
 
@@ -288,11 +288,17 @@ export async function uploadListingImages(
     body: formData,
   });
 
-  if (!res.ok) throw new Error("Failed to upload images");
-  return res.json();
+  const body = await res.json();
+  if (!res.ok) {
+    throw new Error(body.message || "Failed to upload images");
+  }
+  return body.data as PropertyImage[];
 }
 
-export async function deleteListingImage(imageId: string, token: string) {
+export async function deleteListingImage(
+  imageId: string,
+  token: string
+): Promise<{ success: boolean }> {
   const res = await fetch(`${API_URL}/listings/images/${imageId}`, {
     method: "DELETE",
     headers: {
@@ -300,6 +306,9 @@ export async function deleteListingImage(imageId: string, token: string) {
     },
   });
 
-  if (!res.ok) throw new Error("Failed to delete image");
-  return res.json();
+  const body = await res.json();
+  if (!res.ok) {
+    throw new Error(body.message || "Failed to delete image");
+  }
+  return body.data;
 }
