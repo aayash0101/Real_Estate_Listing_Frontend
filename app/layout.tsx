@@ -23,8 +23,8 @@ export default function RootLayout({
             </a>
             <nav className="flex items-center gap-6">
               <a href="/" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Buy</a>
-              <a href="/" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Rent</a>
-              <a href="/" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Agents</a>
+              <a href="/rent" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Rent</a>
+              <a href="/agents" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Agents</a>
               <button
                 style={{ backgroundColor: "var(--amber)", color: "var(--navy)" }}
                 className="text-sm font-semibold px-4 py-2 rounded-lg"

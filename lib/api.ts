@@ -7,6 +7,10 @@ export interface Agent {
   phone: string | null;
 }
 
+export interface AgentSummary extends Agent {
+  listing_count: number;
+}
+
 export interface Property {
   id: string;
   title: string;
@@ -24,6 +28,21 @@ export interface Property {
   internal_status?: string;
   created_at: string;
   agent: Agent;
+}
+
+export type AgentListing = Pick<
+  Property,
+  | "id"
+  | "title"
+  | "price"
+  | "suburb"
+  | "property_type"
+  | "bedrooms"
+  | "bathrooms"
+>;
+
+export interface AgentDetail extends Agent {
+  properties: AgentListing[];
 }
 
 export interface PaginatedListings {
@@ -81,6 +100,23 @@ export async function getListingById(
   });
 
   if (!res.ok) throw new Error("Listing not found");
+  const data = await res.json();
+  return data.data;
+}
+
+export async function getAgents(): Promise<AgentSummary[]> {
+  const res = await fetch(`${API_URL}/agents`, { cache: "no-store" });
+
+  if (!res.ok) throw new Error("Failed to fetch agents");
+  const data = await res.json();
+  return data.data;
+}
+
+export async function getAgentById(id: string): Promise<AgentDetail | null> {
+  const res = await fetch(`${API_URL}/agents/${id}`, { cache: "no-store" });
+
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("Failed to fetch agent");
   const data = await res.json();
   return data.data;
 }
