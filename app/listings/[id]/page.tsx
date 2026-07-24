@@ -1,6 +1,6 @@
 import { getListingById } from "@/lib/api";
 import { formatPrice, formatPropertyType } from "@/lib/utils";
-import { Bed, Bath, Car, MapPin, User, ArrowLeft, AlertCircle } from "lucide-react";
+import { Bed, Bath, Car, MapPin, User, ArrowLeft, AlertCircle, ImageOff } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -11,6 +11,9 @@ const TYPE_ACCENT: Record<string, string> = {
   LAND: "#F59E0B",
   COMMERCIAL: "#64748B",
 };
+
+const API_ORIGIN =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") || "http://localhost:5000";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -29,6 +32,7 @@ export default async function ListingDetailPage({ params }: PageProps) {
   if (!property) notFound();
 
   const accent = TYPE_ACCENT[property.property_type] ?? "#64748B";
+  const images = Array.isArray(property.images) ? property.images : [];
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -44,6 +48,28 @@ export default async function ListingDetailPage({ params }: PageProps) {
       <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
         {/* Top accent bar */}
         <div className="h-1.5 w-full" style={{ backgroundColor: "var(--amber)" }} />
+
+        {/* Image gallery */}
+        {images.length > 0 ? (
+          <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
+            {images.map((img, i) => (
+              <img
+                key={img.id}
+                src={`${API_ORIGIN}${img.url}`}
+                alt={`${property.title} photo ${i + 1}`}
+                className={`w-full object-cover ${i === 0 ? "col-span-2 sm:col-span-2 aspect-video" : "aspect-square"}`}
+              />
+            ))}
+          </div>
+        ) : (
+          <div
+            className="w-full aspect-[21/9] flex flex-col items-center justify-center gap-2"
+            style={{ backgroundColor: "var(--bg)", color: "var(--text-secondary)" }}
+          >
+            <ImageOff size={28} />
+            <span className="text-sm">No photos yet</span>
+          </div>
+        )}
 
         <div className="p-8">
           {/* Header */}
