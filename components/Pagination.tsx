@@ -20,27 +20,26 @@ export default function Pagination({ currentPage, totalPages }: Props) {
     router.push(`/?${params.toString()}`);
   }
 
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
   return (
-    <div className="flex items-center justify-center gap-2 mt-8">
+    <div className="flex items-center justify-center gap-2 mt-10">
       <button
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-2 rounded-lg border border-gray-200 hover:border-blue-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="p-2.5 rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:border-amber-400"
+        style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}
       >
-        <ChevronLeft size={16} />
+        <ChevronLeft size={16} style={{ color: "var(--text-primary)" }} />
       </button>
 
-      {pages.map((p) => (
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
         <button
           key={p}
           onClick={() => goToPage(p)}
-          className={`w-9 h-9 text-sm rounded-lg border transition-colors ${
-            p === currentPage
-              ? "bg-blue-600 text-white border-blue-600"
-              : "border-gray-200 text-gray-600 hover:border-blue-400"
-          }`}
+          className="w-10 h-10 text-sm font-semibold rounded-xl border transition-all"
+          style={p === currentPage
+            ? { backgroundColor: "var(--navy)", color: "#fff", borderColor: "var(--navy)" }
+            : { backgroundColor: "var(--card)", color: "var(--text-secondary)", borderColor: "var(--border)" }
+          }
         >
           {p}
         </button>
@@ -49,9 +48,10 @@ export default function Pagination({ currentPage, totalPages }: Props) {
       <button
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-2 rounded-lg border border-gray-200 hover:border-blue-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="p-2.5 rounded-xl border transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}
       >
-        <ChevronRight size={16} />
+        <ChevronRight size={16} style={{ color: "var(--text-primary)" }} />
       </button>
     </div>
   );
