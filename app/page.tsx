@@ -3,7 +3,7 @@ import { getListings, SearchParams } from "@/lib/api";
 import PropertyCard from "@/components/PropertyCard";
 import SearchFilters from "@/components/SearchFilters";
 import Pagination from "@/components/Pagination";
-import { Building2 } from "lucide-react";
+import { Building2, ServerCrash } from "lucide-react";
 
 interface PageProps {
   searchParams: Promise<SearchParams>;
@@ -23,16 +23,13 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   return (
     <div className="flex gap-6">
-      {/* Sidebar filters */}
       <aside className="w-72 shrink-0">
         <Suspense fallback={null}>
           <SearchFilters />
         </Suspense>
       </aside>
 
-      {/* Results */}
       <div className="flex-1 min-w-0">
-        {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
             <h1 className="text-xl font-bold text-gray-900">
@@ -40,7 +37,8 @@ export default async function HomePage({ searchParams }: PageProps) {
             </h1>
             {data && (
               <p className="text-sm text-gray-500 mt-0.5">
-                {data.total} {data.total === 1 ? "property" : "properties"} found
+                {data.total}{" "}
+                {data.total === 1 ? "property" : "properties"} found
               </p>
             )}
           </div>
@@ -48,25 +46,47 @@ export default async function HomePage({ searchParams }: PageProps) {
 
         {/* Error state */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-            <p className="text-red-600 font-medium">
-              Could not connect to the API. Make sure the backend is running on port 5000.
+          <div className="bg-white border border-red-200 rounded-xl p-10 text-center">
+            <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ServerCrash size={28} className="text-red-400" />
+            </div>
+            <p className="font-semibold text-gray-800 mb-1">
+              Could not load listings
             </p>
+            <p className="text-sm text-gray-500 mb-5">
+              Make sure the backend is running on port 5000.
+            </p>
+            <a
+              href="/"
+              className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+            >
+              Try again
+            </a>
           </div>
         )}
 
         {/* Empty state */}
         {!error && data?.items.length === 0 && (
           <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <Building2 size={40} className="mx-auto text-gray-300 mb-3" />
-            <p className="text-gray-500 font-medium">No properties found</p>
-            <p className="text-gray-400 text-sm mt-1">
-              Try adjusting your filters
+            <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Building2 size={28} className="text-gray-300" />
+            </div>
+            <p className="font-semibold text-gray-700 mb-1">
+              No properties found
             </p>
+            <p className="text-sm text-gray-400 mb-5">
+              Try adjusting your filters to see more results
+            </p>
+            <a
+              href="/"
+              className="inline-flex items-center text-sm text-blue-600 hover:underline"
+            >
+              Clear all filters
+            </a>
           </div>
         )}
 
-        {/* Grid */}
+        {/* Results grid */}
         {!error && data && data.items.length > 0 && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -74,7 +94,6 @@ export default async function HomePage({ searchParams }: PageProps) {
                 <PropertyCard key={property.id} property={property} />
               ))}
             </div>
-
             <Suspense fallback={null}>
               <Pagination
                 currentPage={data.page}
