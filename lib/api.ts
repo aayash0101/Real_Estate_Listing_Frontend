@@ -88,9 +88,16 @@ export interface Property {
   bathrooms: number;
   parking: number;
   land_size: number | null;
+  images: PropertyImage[];
   internal_status?: string;
   created_at: string;
   agent: Agent;
+}
+
+export interface PropertyImage {
+  id: string;
+  url: string;
+  order: number;
 }
 
 export type AgentListing = Pick<

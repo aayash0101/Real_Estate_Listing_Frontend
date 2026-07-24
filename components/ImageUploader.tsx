@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { uploadListingImages, deleteListingImage } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 
@@ -17,14 +16,16 @@ interface ImageUploaderProps {
   onChange: (images: PropertyImage[]) => void;
 }
 
-const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") || "http://localhost:5000";
+const API_ORIGIN =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") || "http://localhost:5000";
 
 export default function ImageUploader({
   listingId,
   existingImages,
   onChange,
 }: ImageUploaderProps) {
-  const { token } = useAuth();
+  const { auth } = useAuth();
+  const token = auth?.token;
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
@@ -58,18 +59,21 @@ export default function ImageUploader({
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium text-[#1A2B3C]">
+      <label className="block text-sm font-medium" style={{ color: "var(--text-primary)" }}>
         Property Photos
       </label>
 
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
         {existingImages.map((img) => (
-          <div key={img.id} className="relative group aspect-square rounded-lg overflow-hidden border border-[#E8E4DC]">
-            <Image
+          <div
+            key={img.id}
+            className="relative group aspect-square rounded-lg overflow-hidden"
+            style={{ border: "1px solid var(--border)" }}
+          >
+            <img
               src={`${API_ORIGIN}${img.url}`}
               alt="Property"
-              fill
-              className="object-cover"
+              className="w-full h-full object-cover"
             />
             <button
               type="button"
@@ -88,11 +92,12 @@ export default function ImageUploader({
         accept="image/jpeg,image/png,image/webp,image/gif"
         multiple
         onChange={handleFileChange}
-        disabled={uploading}
-        className="block w-full text-sm text-[#64748B] file:mr-4 file:rounded-md file:border-0 file:bg-[#1E3A5F] file:px-4 file:py-2 file:text-white file:cursor-pointer hover:file:bg-[#16293F]"
+        disabled={uploading || !token}
+        className="block w-full text-sm file:mr-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-white file:cursor-pointer"
+        style={{ color: "var(--text-secondary)" }}
       />
 
-      {uploading && <p className="text-sm text-[#64748B]">Uploading…</p>}
+      {uploading && <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Uploading…</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
   );
