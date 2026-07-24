@@ -29,6 +29,8 @@ export default function ImageUploader({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
+  const images = existingImages ?? [];
+
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     if (!files || files.length === 0 || !token) return;
@@ -38,7 +40,7 @@ export default function ImageUploader({
 
     try {
       const updated = await uploadListingImages(listingId, Array.from(files), token);
-      onChange(updated);
+      onChange(updated ?? []);
     } catch (err) {
       setError("Failed to upload images. Try again.");
     } finally {
@@ -51,7 +53,7 @@ export default function ImageUploader({
     if (!token) return;
     try {
       await deleteListingImage(imageId, token);
-      onChange(existingImages.filter((img) => img.id !== imageId));
+      onChange(images.filter((img) => img.id !== imageId));
     } catch (err) {
       setError("Failed to delete image.");
     }
@@ -64,7 +66,7 @@ export default function ImageUploader({
       </label>
 
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-        {existingImages.map((img) => (
+        {images.map((img) => (
           <div
             key={img.id}
             className="relative group aspect-square rounded-lg overflow-hidden"
