@@ -264,3 +264,35 @@ export async function deleteListing(token: string, id: string): Promise<void> {
     throw new Error(body.message || "Failed to delete listing");
   }
 }
+
+export async function uploadListingImages(
+  listingId: string,
+  files: File[],
+  token: string
+) {
+  const formData = new FormData();
+  files.forEach((file) => formData.append("images", file));
+
+  const res = await fetch(`${API_URL}/listings/${listingId}/images`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error("Failed to upload images");
+  return res.json();
+}
+
+export async function deleteListingImage(imageId: string, token: string) {
+  const res = await fetch(`${API_URL}/listings/images/${imageId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) throw new Error("Failed to delete image");
+  return res.json();
+}
