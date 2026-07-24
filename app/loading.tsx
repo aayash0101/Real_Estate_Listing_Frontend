@@ -1,42 +1,43 @@
 export default function Loading() {
   return (
-    <div className="flex gap-6">
-      {/* Sidebar skeleton */}
+    <div className="flex gap-8 items-start">
       <aside className="w-72 shrink-0">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4 animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-24" />
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="space-y-2">
-              <div className="h-3 bg-gray-100 rounded w-20" />
-              <div className="h-9 bg-gray-100 rounded-lg w-full" />
-            </div>
-          ))}
-          <div className="h-10 bg-gray-200 rounded-lg w-full" />
+        <div className="rounded-2xl overflow-hidden animate-pulse" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+          <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
+            <div className="h-4 rounded w-16" style={{ backgroundColor: "var(--bg)" }} />
+          </div>
+          <div className="p-5 space-y-5">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="h-3 rounded w-20" style={{ backgroundColor: "var(--bg)" }} />
+                <div className="h-10 rounded-lg w-full" style={{ backgroundColor: "var(--bg)" }} />
+              </div>
+            ))}
+            <div className="h-12 rounded-xl w-full" style={{ backgroundColor: "var(--bg)" }} />
+          </div>
         </div>
       </aside>
 
-      {/* Cards skeleton */}
       <div className="flex-1">
-        <div className="h-6 bg-gray-200 rounded w-40 mb-5 animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="mb-6 space-y-2">
+          <div className="h-3 rounded w-16 animate-pulse" style={{ backgroundColor: "var(--border)" }} />
+          <div className="h-8 rounded w-56 animate-pulse" style={{ backgroundColor: "var(--border)" }} />
+        </div>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse"
-            >
-              <div className="h-2 bg-gray-200 w-full" />
-              <div className="p-5 space-y-3">
+            <div key={i} className="rounded-2xl overflow-hidden flex animate-pulse" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+              <div className="w-1 shrink-0" style={{ backgroundColor: "var(--amber)", opacity: 0.3 }} />
+              <div className="flex-1 p-5 space-y-3">
                 <div className="flex justify-between">
-                  <div className="h-5 bg-gray-200 rounded w-20" />
-                  <div className="h-5 bg-gray-200 rounded w-28" />
+                  <div className="h-6 rounded-full w-20" style={{ backgroundColor: "var(--bg)" }} />
+                  <div className="h-6 rounded w-28" style={{ backgroundColor: "var(--bg)" }} />
                 </div>
-                <div className="h-4 bg-gray-200 rounded w-full" />
-                <div className="h-4 bg-gray-100 rounded w-3/4" />
-                <div className="h-3 bg-gray-100 rounded w-1/2" />
-                <div className="flex gap-4 pt-2 border-t border-gray-100">
-                  <div className="h-4 bg-gray-100 rounded w-10" />
-                  <div className="h-4 bg-gray-100 rounded w-10" />
-                  <div className="h-4 bg-gray-100 rounded w-10" />
+                <div className="h-4 rounded w-full" style={{ backgroundColor: "var(--bg)" }} />
+                <div className="h-3 rounded w-2/3" style={{ backgroundColor: "var(--bg)" }} />
+                <div className="flex gap-4 pt-3" style={{ borderTop: "1px solid var(--border)" }}>
+                  <div className="h-4 rounded w-10" style={{ backgroundColor: "var(--bg)" }} />
+                  <div className="h-4 rounded w-10" style={{ backgroundColor: "var(--bg)" }} />
+                  <div className="h-4 rounded w-10" style={{ backgroundColor: "var(--bg)" }} />
                 </div>
               </div>
             </div>
