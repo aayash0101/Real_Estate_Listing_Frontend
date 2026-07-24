@@ -183,3 +183,84 @@ export async function getAgentById(id: string): Promise<AgentDetail | null> {
   const data = await res.json();
   return data.data;
 }
+
+function authHeaders(token?: string): Record<string, string> {
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+export async function getMyListings(
+  token: string,
+  params: SearchParams = {}
+): Promise<PaginatedListings> {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, val]) => {
+    if (val) query.set(key, val);
+  });
+  query.set("mine", "true");
+
+  const res = await fetch(`${API_URL}/listings?${query.toString()}`, {
+    headers: authHeaders(token),
+    cache: "no-store",
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch your listings");
+  const data = await res.json();
+  return data.data;
+}
+
+export interface ListingInput {
+  title: string;
+  description: string;
+  price: number;
+  suburb: string;
+  state: string;
+  postcode: string;
+  address: string;
+  property_type: Property["property_type"];
+  bedrooms: number;
+  bathrooms: number;
+  parking?: number;
+  land_size?: number;
+  internal_status?: string;
+}
+
+async function parseListingResponse(res: Response): Promise<Property> {
+  const body = await res.json();
+  if (!res.ok) {
+    throw new Error(body.message || "Request failed");
+  }
+  return body.data as Property;
+}
+
+export async function createListing(token: string, input: ListingInput): Promise<Property> {
+  const res = await fetch(`${API_URL}/listings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders(token) },
+    body: JSON.stringify(input),
+  });
+  return parseListingResponse(res);
+}
+
+export async function updateListing(
+  token: string,
+  id: string,
+  input: Partial<ListingInput>
+): Promise<Property> {
+  const res = await fetch(`${API_URL}/listings/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...authHeaders(token) },
+    body: JSON.stringify(input),
+  });
+  return parseListingResponse(res);
+}
+
+export async function deleteListing(token: string, id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/listings/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(token),
+  });
+  if (!res.ok && res.status !== 204) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.message || "Failed to delete listing");
+  }
+}
