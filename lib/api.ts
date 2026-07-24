@@ -7,6 +7,69 @@ export interface Agent {
   phone: string | null;
 }
 
+export interface AgentAuthResult {
+  agent: { id: string; name: string; email: string; phone: string | null; is_admin: boolean };
+  token: string;
+}
+
+export interface UserAuthResult {
+  user: { id: string; name: string; email: string };
+  token: string;
+}
+
+async function parseAuthResponse<T>(res: Response): Promise<T> {
+  const body = await res.json();
+  if (!res.ok) {
+    throw new Error(body.error || body.message || "Request failed");
+  }
+  return body.data as T;
+}
+
+export async function loginAgent(email: string, password: string): Promise<AgentAuthResult> {
+  const res = await fetch(`${API_URL}/auth/agent/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  return parseAuthResponse<AgentAuthResult>(res);
+}
+
+export async function registerAgent(
+  name: string,
+  email: string,
+  phone: string,
+  password: string
+): Promise<AgentAuthResult> {
+  const res = await fetch(`${API_URL}/auth/agent/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, phone, password }),
+  });
+  return parseAuthResponse<AgentAuthResult>(res);
+}
+
+export async function loginUser(email: string, password: string): Promise<UserAuthResult> {
+  const res = await fetch(`${API_URL}/auth/user/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  return parseAuthResponse<UserAuthResult>(res);
+}
+
+export async function registerUser(
+  name: string,
+  email: string,
+  password: string
+): Promise<UserAuthResult> {
+  const res = await fetch(`${API_URL}/auth/user/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password }),
+  });
+  return parseAuthResponse<UserAuthResult>(res);
+}
+
 export interface AgentSummary extends Agent {
   listing_count: number;
 }
