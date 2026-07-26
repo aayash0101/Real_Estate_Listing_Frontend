@@ -312,3 +312,51 @@ export async function deleteListingImage(
   }
   return body.data;
 }
+
+export interface Inquiry {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  message: string;
+  created_at: string;
+  property: {
+    id: string;
+    title: string;
+    address: string;
+  };
+}
+
+export interface InquiryInput {
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+}
+
+export async function submitInquiry(listingId: string, input: InquiryInput): Promise<Inquiry> {
+  const res = await fetch(`${API_URL}/listings/${listingId}/inquiries`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  const body = await res.json();
+  if (!res.ok) {
+    throw new Error(body.message || "Failed to send inquiry");
+  }
+  return body.data as Inquiry;
+}
+
+export async function getMyInquiries(token: string): Promise<Inquiry[]> {
+  const res = await fetch(`${API_URL}/inquiries/mine`, {
+    headers: authHeaders(token),
+    cache: "no-store",
+  });
+
+  const body = await res.json();
+  if (!res.ok) {
+    throw new Error(body.message || "Failed to fetch inquiries");
+  }
+  return body.data as Inquiry[];
+}
