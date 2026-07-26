@@ -11,9 +11,7 @@ export default function Nav() {
       <Link href="/" className="text-sm font-medium text-white/70 hover:text-white transition-colors">
         Buy
       </Link>
-      <Link href="/rent" className="text-sm font-medium text-white/70 hover:text-white transition-colors">
-        Rent
-      </Link>
+      
       <Link href="/agents" className="text-sm font-medium text-white/70 hover:text-white transition-colors">
         Agents
       </Link>
@@ -22,6 +20,12 @@ export default function Nav() {
         <Link href="/dashboard" className="text-sm font-medium text-white/70 hover:text-white transition-colors">
           My Listings
         </Link>
+
+      )}
+      {auth?.profile.type === "agent" && (
+      <Link href="/dashboard/inquiries" className="text-sm font-medium  text-white/70 hover:opacity-70 transition-opacity">
+        Inquiries
+      </Link>
       )}
 
       {auth ? (
