@@ -3,6 +3,7 @@ import { formatPrice, formatPropertyType } from "@/lib/utils";
 import { Bed, Bath, Car, MapPin, User, ArrowLeft, AlertCircle, ImageOff } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ContactAgentForm from "@/components/ContactAgentForm";
 
 const TYPE_ACCENT: Record<string, string> = {
   HOUSE: "#3B82F6",
@@ -181,13 +182,8 @@ export default async function ListingDetailPage({ params }: PageProps) {
                   <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{property.agent.phone}</p>
                 )}
               </div>
-              <div className="ml-auto">
-                <button
-                  className="px-4 py-2 rounded-xl text-sm font-semibold transition-opacity hover:opacity-90"
-                  style={{ backgroundColor: "var(--amber)", color: "var(--navy)" }}
-                >
-                  Contact Agent
-                </button>
+             <div className="ml-auto">
+                <ContactAgentForm listingId={property.id} />
               </div>
             </div>
           </div>
